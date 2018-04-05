@@ -1,0 +1,9 @@
+#ifndef _ASSETLOADER_HPP_
+#define _ASSETLOADER_HPP_
+
+// This is an automatically generated file that will load all asset files
+// into a map for easy access.
+
+%% ASSETS %%
+
+#endif // _ASSETLOADER_HPP_

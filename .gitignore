@@ -1,0 +1,9 @@
+bin/
+*.exe
+assets/
+Examples/
+obj/
+.objs/
+*.cbp
+*.depend
+*.layout
