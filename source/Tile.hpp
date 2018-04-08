@@ -8,7 +8,10 @@ struct Tile {
 	enum Type { VOID, AIR, WALL, DOOR, TRAP, BUSH };
 	Type type;
 
-	Tile(Type t = VOID): type(t) {}
+	bool passable;
+	bool solid;
+
+	Tile(Type t = VOID): type(t), passable(true), solid(false) {}
 };
 
 #endif
