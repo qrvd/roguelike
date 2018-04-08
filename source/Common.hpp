@@ -55,6 +55,11 @@ struct Rectangle {
   Rectangle(Vector pos, Vector size): x(pos.x), y(pos.y), w(size.x), h(size.y), right(pos.x+size.x), bot(pos.y+size.y) {}
   Rectangle(int w, int h): x(0), y(0), w(w), h(h), right(w), bot(h) {}
   Rectangle(Vector size): x(0), y(0), w(size.x), h(size.y), right(size.x), bot(size.y) {}
+
+  bool intersects(Rectangle b) {
+      return (x >= b.x && right < b.right &&
+              y >= b.y && bot < b.bot);
+  }
 };
 
 #endif
