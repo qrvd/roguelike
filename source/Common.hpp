@@ -49,12 +49,12 @@ Vector mult(Vector a, Vector b) {
 }
 
 struct Rectangle {
-  int x, y, w, h;
+  int x, y, w, h, right, bot;
 
-  Rectangle(int x, int y, int w, int h): x(x), y(y), w(w), h(h) {}
-  Rectangle(Vector pos, Vector size): x(pos.x), y(pos.y), w(size.x), h(size.y) {}
-  Rectangle(int w, int h): x(0), y(0), w(w), h(h) {}
-  Rectangle(Vector size): x(0), y(0), w(size.x), h(size.y) {}
+  Rectangle(int x, int y, int w, int h): x(x), y(y), w(x), h(x), right(x+w), bot(y+h) {}
+  Rectangle(Vector pos, Vector size): x(pos.x), y(pos.y), w(size.x), h(size.y), right(pos.x+size.x), bot(pos.y+size.y) {}
+  Rectangle(int w, int h): x(0), y(0), w(w), h(h), right(w), bot(h) {}
+  Rectangle(Vector size): x(0), y(0), w(size.x), h(size.y), right(size.x), bot(size.y) {}
 };
 
 #endif
