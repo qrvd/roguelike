@@ -3,6 +3,7 @@ bin/
 assets/
 Examples/
 obj/
+gfx/
 .objs/
 *.cbp
 *.depend
