@@ -11,7 +11,7 @@ struct Tile {
 	bool passable;
 	bool solid;
 
-	Tile(Type t = VOID): type(t), passable(true), solid(false) {}
+	Tile(Type t = VOID): type(t), passable(false), solid(true) {}
 };
 
 #endif

@@ -49,17 +49,12 @@ Vector mult(Vector a, Vector b) {
 }
 
 struct Rectangle {
-  int x, y, w, h, right, bot;
+  int x, y, w, h, x2, y2;
 
-  Rectangle(int x, int y, int w, int h): x(x), y(y), w(x), h(x), right(x+w), bot(y+h) {}
-  Rectangle(Vector pos, Vector size): x(pos.x), y(pos.y), w(size.x), h(size.y), right(pos.x+size.x), bot(pos.y+size.y) {}
-  Rectangle(int w, int h): x(0), y(0), w(w), h(h), right(w), bot(h) {}
-  Rectangle(Vector size): x(0), y(0), w(size.x), h(size.y), right(size.x), bot(size.y) {}
-
-  bool intersects(Rectangle b) {
-      return (x >= b.x && right < b.right &&
-              y >= b.y && bot < b.bot);
-  }
+  Rectangle(int x, int y, int w, int h): x(x), y(y), w(x), h(x), x2(x+w), y2(y+h) {}
+  Rectangle(Vector pos, Vector size): x(pos.x), y(pos.y), w(size.x), h(size.y), x2(pos.x+size.x), y2(pos.y+size.y) {}
+  Rectangle(int w, int h): x(0), y(0), w(w), h(h), x2(0), y2(0) { }
+  Rectangle(Vector size): x(0), y(0), w(size.x), h(size.y), x2(0), y2(0) {}
 };
 
 #endif

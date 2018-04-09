@@ -26,12 +26,13 @@ void draw(SDL_Surface *src, Rectangle clip, SDL_Surface* dest, Rectangle pos) {
 }
 
 int main(int argc, char **argv) {
-	Level test(40, 40);
+	Level test(80, 45);
+	test.generate();
 	Monster *goblin = new Monster(&test, "goblin", 20, Vector(5, 5));
 	goblin->items.push_back(new Item(Item::WEAPON, Vector(0,0)));
 	test.monsters.push_back(goblin);
 
-	Vector tilesize(16,16);
+	Vector tilesize(16, 16);
 	int scale = 1;
 	Vector scaledtilesize = tilesize * scale;
 	Rectangle viewport(Vector(0, 0), mult(test.size, scaledtilesize));
@@ -90,8 +91,9 @@ int main(int argc, char **argv) {
             // Set the viewport
             int scaledGx = goblin->pos.x * scaledtilesize.x;
             int scaledGy = goblin->pos.y * scaledtilesize.y;
-            viewport.x = (scaledGx + scaledtilesize.x / 2) - viewport.w/2;
-            viewport.y = (scaledGy + scaledtilesize.y / 2) - viewport.h/2;
+            int newx = (scaledGx + scaledtilesize.x / 2) - viewport.w/2;
+            int newy = (scaledGy + scaledtilesize.y / 2) - viewport.h/2;
+            viewport = Rectangle(newx, newy, viewport.w, viewport.h);
 
             clamp(viewport.x, 0, test.size.x * scaledtilesize.x - viewport.w);
             clamp(viewport.y, 0, test.size.y * scaledtilesize.x - viewport.h);
@@ -106,6 +108,7 @@ int main(int argc, char **argv) {
                 for (int x = 0; x < test.size.x; x++) {
                     Rectangle posRect(mult(Vector(x, y), scaledtilesize) - offset, scaledtilesize);
                     Tile t = *test.getTile(x, y);
+
                     Vector clip(0, 0);
                     String assetName = "Tile";
 
@@ -129,13 +132,13 @@ int main(int argc, char **argv) {
                 Rectangle posRect = Rectangle(mult(i->pos, scaledtilesize), scaledtilesize);
                 switch (i->type) {
                     case Item::POTION:
-                        draw(assets["Potion"], Rectangle(Vector(0, 0), tilesize), screen, posRect);
+                        draw(assets["Potion"], Rectangle(tilesize), screen, posRect);
                         break;
                     case Item::SCROLL:
-                        draw(assets["Scroll"], Rectangle(Vector(0, 0), tilesize), screen, posRect);
+                        draw(assets["Scroll"], Rectangle(tilesize), screen, posRect);
                         break;
                     case Item::WEAPON:
-                        draw(assets["MedWep"], Rectangle(Vector(0, 0), tilesize), screen, posRect);
+                        draw(assets["MedWep"], Rectangle(tilesize), screen, posRect);
                         break;
                 }
             }
