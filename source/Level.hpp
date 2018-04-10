@@ -1,6 +1,8 @@
 #ifndef _LEVEL_HPP_
 #define _LEVEL_HPP_
 
+#include "SDL/SDL.h"
+
 struct Level {
 	const Vector size;
 	List<Tile*> tiles;
@@ -12,46 +14,67 @@ struct Level {
 	Level(Vector size)
 		: size(size), tiles(size.x * size.y, new Tile(Tile::VOID)), items(), monsters() {}
 
+	Tile *getTile(Vector pos) {
+	    if (pos.x < size.x && pos.x >= 0 && pos.y < size.y && pos.y >= 0) {
+            return tiles[pos.x + pos.y * size.x];
+	    } else {
+            return NULL;
+		}
+	}
+
 	Tile *getTile(int x, int y) {
-		return tiles[x + y * size.x];
+	    return getTile(Vector(x, y));
 	}
 
 	void setTile(int x, int y, Tile *t) {
 		tiles.set(x + y * size.x, t);
 	}
 
-	void digRoom(Rectangle r) {
-        for (int y = r.y; y <= r.y2; y++) {
-            for (int x = r.x; x <= r.y2; x++) {
-                Tile *t = getTile(x, y);
-                t->passable = true;
-                t->solid = false;
-                t->type = Tile::AIR;
-            }
-        }
+	void digTile(int x, int y) {
+        Tile *t = getTile(x, y);
+        t->blocked = false;
+        t->block_sight = false;
+        t->type = Tile::AIR;
 	}
 
 	void tunnelX(int start, int end, int y) {
+	    if (start > end) {
+            int temp = start;
+            start = end;
+            end = temp;
+	    }
         for (int x = start; x <= end; x++) {
-            Tile *t = getTile(x, y);
-            t->passable = true;
-            t->solid = false;
-            t->type = Tile::AIR;
+            digTile(x, y);
         }
 	}
 
 	void tunnelY(int start, int end, int x) {
+	    if (start > end) {
+            int temp = start;
+            start = end;
+            end = temp;
+	    }
         for (int y = start; y <= end; y++) {
-            Tile *t = getTile(x, y);
-            t->passable = true;
-            t->solid = false;
-            t->type = Tile::AIR;
+            digTile(x, y);
+        }
+	}
+
+	void digRoom(Rectangle r) {
+        for (int x1 = r.x + 1; x1 < r.x2; x1++) {
+            for (int y1 = r.y + 1; y1 < r.y2; y1++) {
+                digTile(x1, y1);
+            }
         }
 	}
 
 	void generate() {
-	    digRoom(Rectangle(20, 15, 30, 30));
-	    digRoom(Rectangle(50, 15, 60, 30));
+	    int minroomsize = 6;
+	    int maxroomsize = 10;
+	    int maxrooms = 30;
+	    std::vector<Rectangle> rooms;
+	    tunnelX(25, 55, 23);
+	    digRoom(Rectangle(20, 15, 10, 15));
+	    digRoom(Rectangle(50, 15, 10, 15));
 	}
 };
 
