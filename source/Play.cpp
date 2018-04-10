@@ -27,12 +27,12 @@ void draw(SDL_Surface *src, Rectangle clip, SDL_Surface* dest, Rectangle pos) {
 
 int main(int argc, char **argv) {
 	Level test(80, 45);
-	test.generate();
 	Monster *goblin = new Monster(&test, "goblin", 20, Vector(5, 5));
 	goblin->items.push_back(new Item(Item::WEAPON, Vector(0,0)));
 	test.monsters.push_back(goblin);
+	test.generate();
 
-	Vector tilesize(16, 16);
+	Vector tilesize(8, 8);
 	int scale = 1;
 	Vector scaledtilesize = tilesize * scale;
 	Rectangle viewport(Vector(0, 0), mult(test.size, scaledtilesize));
@@ -78,10 +78,11 @@ int main(int argc, char **argv) {
                 if (event.type == SDL_KEYDOWN) {
                     switch (event.key.keysym.sym) {
                         case SDLK_ESCAPE: running = false; break;
-                        case SDLK_w: goblin->pos.y--; break;
-                        case SDLK_s: goblin->pos.y++; break;
-                        case SDLK_a: goblin->pos.x--; break;
-                        case SDLK_d: goblin->pos.x++; break;
+                        case SDLK_w: goblin->move(0, -1); break;
+                        case SDLK_s: goblin->move(0, +1); break;
+                        case SDLK_a: goblin->move(-1, 0); break;
+                        case SDLK_d: goblin->move(+1, 0); break;
+                        case SDLK_g: test.generate(); break;
                     }
                 }
             }
@@ -93,7 +94,7 @@ int main(int argc, char **argv) {
             int scaledGy = goblin->pos.y * scaledtilesize.y;
             int newx = (scaledGx + scaledtilesize.x / 2) - viewport.w/2;
             int newy = (scaledGy + scaledtilesize.y / 2) - viewport.h/2;
-            viewport = Rectangle(newx, newy, viewport.w, viewport.h);
+            viewport.x = newx; viewport.y = newy;
 
             clamp(viewport.x, 0, test.size.x * scaledtilesize.x - viewport.w);
             clamp(viewport.y, 0, test.size.y * scaledtilesize.x - viewport.h);
@@ -107,13 +108,13 @@ int main(int argc, char **argv) {
             for (int y = 0; y < test.size.y; y++) {
                 for (int x = 0; x < test.size.x; x++) {
                     Rectangle posRect(mult(Vector(x, y), scaledtilesize) - offset, scaledtilesize);
-                    Tile t = *test.getTile(x, y);
+                    Tile *t = test.getTile(x, y);
 
                     Vector clip(0, 0);
                     String assetName = "Tile";
 
                     // Determine the position of tile to use, and the asset file to use.
-                    switch (t.type) {
+                    switch (t->type) {
                         case Tile::VOID: clip = Vector(0, 2); break;
                         case Tile::AIR:  clip = Vector(0, 0); break;
                         case Tile::WALL: clip = Vector(3, 2); break;
