@@ -8,10 +8,11 @@ struct Tile {
 	enum Type { VOID, AIR, WALL, DOOR, TRAP, BUSH };
 	Type type;
 
-	bool passable;
-	bool solid;
+	bool blocked;
+	bool block_sight;
 
-	Tile(Type t = VOID): type(t), passable(false), solid(true) {}
+	Tile(Type t = VOID, bool blocked = false, bool block_sight = false): type(t), blocked(blocked), block_sight(true) {
+	}
 };
 
 #endif
