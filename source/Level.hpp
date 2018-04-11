@@ -9,10 +9,16 @@ struct Level {
 	List<Item*> items;
 	List<Monster*> monsters;
 
+	void createMap() {
+        for (int y = 0; y < size.y; y++)
+            for (int x = 0; x < size.x; x++)
+                tiles.push_back(new Tile(Tile::VOID, true, false));
+	}
+
 	Level(int w, int h)
-		: size(w, h), tiles(w * h, new Tile(Tile::VOID)), items(), monsters() {}
+		: size(w, h), tiles(), items(), monsters() { createMap(); }
 	Level(Vector size)
-		: size(size), tiles(size.x * size.y, new Tile(Tile::VOID)), items(), monsters() {}
+		: size(size), tiles(), items(), monsters() { createMap(); }
 
 	Tile *getTile(Vector pos) {
 	    if (pos.x < size.x && pos.x >= 0 && pos.y < size.y && pos.y >= 0) {
