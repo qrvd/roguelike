@@ -1,6 +1,8 @@
 #ifndef _COMMON_HPP_
 #define _COMMON_HPP_
 
+#include <chrono>
+#include <ctime>
 #include <vector>
 #include <map>
 #include <string>
@@ -51,9 +53,17 @@ Vector mult(Vector a, Vector b) {
 struct Rectangle {
   int x, y, w, h, x2, y2;
 
+  Vector center() {
+    return Vector(round(float(x) + float(w)/2), round(float(y) + float(h)/2));
+  }
+
+  bool intersects(Rectangle other) {
+      return (x <= other.x2 && x2 >= other.x &&
+              y <= other.y2 && y2 >= other.y);
+  }
+
   Rectangle(int _x, int _y, int _w, int _h): x(_x), y(_y), w(_w), h(_h), x2(_x+_w), y2(_y+_h) {}
   Rectangle(Vector pos, Vector size): x(pos.x), y(pos.y), w(size.x), h(size.y), x2(pos.x+size.x), y2(pos.y+size.y) {}
   Rectangle(Vector size): x(0), y(0), w(size.x), h(size.y), x2(0), y2(0) {}
 };
-
 #endif

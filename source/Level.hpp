@@ -2,6 +2,13 @@
 #define _LEVEL_HPP_
 
 #include "SDL/SDL.h"
+#include "Monster.hpp"
+
+struct Player {
+	Monster *avatar;
+};
+
+Player player;
 
 struct Level {
 	const Vector size;
@@ -38,9 +45,11 @@ struct Level {
 
 	void digTile(int x, int y) {
         Tile *t = getTile(x, y);
-        t->blocked = false;
-        t->block_sight = false;
-        t->type = Tile::AIR;
+        if (t) {
+            t->blocked = false;
+            t->block_sight = false;
+            t->type = Tile::AIR;
+        }
 	}
 
 	void tunnelX(int start, int end, int y) {
@@ -66,9 +75,10 @@ struct Level {
 	}
 
 	void digRoom(Rectangle r) {
-        for (int x1 = r.x + 1; x1 < r.x2; x1++) {
-            for (int y1 = r.y + 1; y1 < r.y2; y1++) {
-                digTile(x1, y1);
+        for (int x = r.x + 1; x < r.x2; x++) {
+            for (int y = r.y+1; y <= r.y2; y++) {
+                digTile(x, y);
+                getTile(x,y)->type = Tile::DOOR;
             }
         }
 	}
@@ -78,9 +88,51 @@ struct Level {
 	    int maxroomsize = 10;
 	    int maxrooms = 30;
 	    std::vector<Rectangle> rooms;
-	    tunnelX(25, 55, 23);
-	    digRoom(Rectangle(20, 15, 10, 15));
-	    digRoom(Rectangle(50, 15, 10, 15));
+
+	    srand(time(NULL));
+
+	    for (int r = 0; r < maxrooms; r++) {
+            int width = minroomsize + rand() % (maxroomsize - minroomsize);
+            int height = minroomsize + rand() % (maxroomsize - minroomsize);
+            int x = rand() % size.x;
+            int y = rand() % size.y;
+
+            Rectangle room(x, y, width, height);
+
+            // Don't place if it intersects with any room.
+            bool intersected = false;
+
+            // Can't leave the map.
+            if (room.x2 >= size.x || room.y2 >= size.y)
+                intersected = true;
+
+            for (int i = 0; i < rooms.size(); i++) {
+                if (room.intersects(rooms[i])) {
+                    intersected = true;
+                    break;
+                }
+            }
+
+            if (!intersected) {
+                rooms.push_back(room);
+                Vector center = room.center();
+                digRoom(room);
+
+                if (rooms.size() > 1) {
+                    Vector previousCenter = rooms[rooms.size()-2].center();
+
+                    if (rand() % 2 == 0) {
+                        // vertical then horizontal
+                        tunnelY(center.y, previousCenter.y, previousCenter.y);
+                        tunnelX(center.x, previousCenter.x, previousCenter.x);
+                    } else {
+                        // horizontal then vertical
+                        tunnelX(center.x, previousCenter.x, previousCenter.x);
+                        tunnelY(center.y, previousCenter.y, previousCenter.y);
+                    }
+                }
+            }
+	    }
 	}
 };
 
