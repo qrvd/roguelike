@@ -1,7 +1,7 @@
 #include "Common.hpp"
 #include "Item.hpp"
-#include "Monster.hpp"
 #include "Tile.hpp"
+#include "Monster.hpp"
 #include "Monster.hpp"
 #include "Level.hpp"
 #include <cstdio>
@@ -11,10 +11,6 @@ void clamp(int& num, int lower, int upper) {
     if (num < lower) num = lower;
     if (num > upper) num = upper;
 }
-
-struct Player {
-	Monster avatar;
-};
 
 void draw(SDL_Surface *src, Rectangle clip, SDL_Surface* dest, Rectangle pos) {
     SDL_Rect srcrect = {clip.x, clip.y, clip.w, clip.h};
@@ -27,12 +23,13 @@ void draw(SDL_Surface *src, Rectangle clip, SDL_Surface* dest, Rectangle pos) {
 
 int main(int argc, char **argv) {
 	Level test(80, 45);
-	Monster *goblin = new Monster(&test, "goblin", 20, Vector(5, 5));
+	Monster *goblin = new Monster(&test, "goblin", 20, Vector(25, 20));
 	goblin->items.push_back(new Item(Item::WEAPON, Vector(0,0)));
 	test.monsters.push_back(goblin);
+	player.avatar = goblin;
 	test.generate();
 
-	Vector tilesize(8, 8);
+	Vector tilesize(16, 16);
 	int scale = 1;
 	Vector scaledtilesize = tilesize * scale;
 	Rectangle viewport(Vector(0, 0), mult(test.size, scaledtilesize));
