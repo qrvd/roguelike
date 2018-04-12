@@ -1,8 +1,9 @@
 #ifndef _MONSTER_HPP_
 #define _MONSTER_HPP_
 
-#include "Tile.hpp"
-#include "Level.hpp"
+struct Level;
+struct Item;
+#include "Common.hpp"
 
 struct Monster {
 	Level *level;
@@ -11,24 +12,9 @@ struct Monster {
 	int health;
 	Vector pos;
 
-	Monster(Level *level, String name, int health = 20, Vector pos = Vector())
-		: level(level), items(), name(name), health(health), pos(pos) {}
-
-    void move(int dx, int dy) {
-        move(Vector(dx, dy));
-    }
-
-    void move(Vector delta) {
-        Vector dest = pos + delta;
-        if (level) {
-            Tile *t = level->getTile(dest);
-            if (t && !t->blocked) {
-                pos = dest;
-            }
-        } else {
-            pos = dest;
-        }
-    }
+	Monster(Level *level, int health = 20, Vector pos = Vector());
+    void move(int dx, int dy);
+    void move(Vector delta);
 };
 
 #endif
