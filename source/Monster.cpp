@@ -10,6 +10,7 @@ Monster::Monster(Level *level, int health, Vector pos)
 
 void Monster::move(int dx, int dy) {
     move(Vector(dx, dy));
+    printf("I'm %s. I take a step!\n", name);
 }
 
 void Monster::move(Vector delta) {
